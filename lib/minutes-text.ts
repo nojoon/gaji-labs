@@ -33,11 +33,12 @@ export function formatMeetingDateTime(value?: string | null, fallbackIso?: strin
     if (!hour && fallbackIso) {
       const fallback = new Date(fallbackIso);
       if (!Number.isNaN(fallback.getTime())) {
-        hour = new Intl.DateTimeFormat('ko-KR', {
+        const foundHour = new Intl.DateTimeFormat('ko-KR', {
           timeZone: 'Asia/Seoul',
           hour: '2-digit',
           hour12: false,
         }).formatToParts(fallback).find((part) => part.type === 'hour')?.value;
+        if (foundHour) hour = foundHour;
       }
     }
     return `${matched[1]}년 ${Number(matched[2])}월 ${Number(matched[3])}일 ${padHour(hour)}시`;
