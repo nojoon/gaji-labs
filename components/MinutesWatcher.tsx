@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { InlineBusy, NavLink } from '@/components/LoadingProvider';
 import { fetchMeetingMinutes } from '@/lib/api';
 import type { MeetingMinutesJob } from '@/lib/types';
 import { MinutesDocument } from './MinutesDocument';
@@ -42,7 +42,11 @@ export function MinutesWatcher({ id }: { id: string }) {
     return <p className="text-sm text-red-600">{error}</p>;
   }
 
-  if (!job || job.status === 'processing') {
+  if (!job) {
+    return <InlineBusy message="회의록을 불러오는 중..." />;
+  }
+
+  if (job.status === 'processing') {
     return (
       <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
         <div className="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-brand border-t-transparent" />
@@ -59,9 +63,9 @@ export function MinutesWatcher({ id }: { id: string }) {
       <div className="rounded-2xl border border-red-100 bg-white px-6 py-12 text-center shadow-sm">
         <h1 className="text-xl font-bold text-slate-900">회의록 생성에 실패했습니다</h1>
         <p className="mt-2 text-sm text-red-600">{job.error_message || '알 수 없는 오류'}</p>
-        <Link href="/" className="mt-6 inline-block rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white">
+        <NavLink href="/" className="mt-6 inline-block rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white">
           다시 업로드
-        </Link>
+        </NavLink>
       </div>
     );
   }
@@ -73,9 +77,9 @@ export function MinutesWatcher({ id }: { id: string }) {
   return (
     <div>
       {editing ? null : (
-        <Link href="/minutes" className="mb-4 inline-block text-sm font-semibold text-brand hover:text-brand-dark">
+        <NavLink href="/minutes" className="mb-4 inline-block text-sm font-semibold text-brand hover:text-brand-dark">
           ← 목록
-        </Link>
+        </NavLink>
       )}
       <MinutesDocument
         id={job.id}

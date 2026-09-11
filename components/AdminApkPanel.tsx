@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { InlineBusy, useLoading } from '@/components/LoadingProvider';
 import { fetchAppRelease, formatFileSize, uploadAppRelease, type AppRelease } from '@/lib/api';
 import { apkPackageError, extractApkPackageName } from '@/lib/apk-package';
 
@@ -13,6 +14,7 @@ export function AdminApkPanel() {
   const [message, setMessage] = useState<string | null>(null);
   const [selected, setSelected] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const { run } = useLoading();
 
   useEffect(() => {
     fetchAppRelease()
@@ -30,7 +32,7 @@ export function AdminApkPanel() {
       setError('APK 파일만 등록할 수 있습니다.');
       return;
     }
-    const packageName = await extractApkPackageName(file);
+    const packageName = await run(() => extractApkPackageName(file), 'APK 확인 중...');
     const packageError = apkPackageError(packageName);
     if (packageError) {
       setError(packageError);
@@ -45,7 +47,7 @@ export function AdminApkPanel() {
     setError(null);
     setMessage(null);
     try {
-      const next = await uploadAppRelease(selected);
+      const next = await run(() => uploadAppRelease(selected), 'APK 등록 중...');
       setRelease(next);
       setSelected(null);
       setMessage(release ? '기존 APK를 삭제하고 새 APK로 업데이트했습니다.' : 'APK를 등록했습니다.');
@@ -58,7 +60,7 @@ export function AdminApkPanel() {
   }
 
   if (loading) {
-    return <p className="text-sm text-slate-500">불러오는 중...</p>;
+    return <InlineBusy />;
   }
 
   return (

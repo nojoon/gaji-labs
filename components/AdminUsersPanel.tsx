@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { InlineBusy, useLoading } from '@/components/LoadingProvider';
 import { fetchAdminUsers, fetchMe, grantAdminCredits, type AdminUser } from '@/lib/api';
 
 const PAGE_SIZE = 10;
@@ -14,6 +15,7 @@ export function AdminUsersPanel() {
   const [error, setError] = useState<string | null>(null);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
+  const { run } = useLoading();
 
   useEffect(() => {
     fetchMe()
@@ -36,7 +38,7 @@ export function AdminUsersPanel() {
     setLoadingMore(true);
     setError(null);
     try {
-      const data = await fetchAdminUsers(items.length, PAGE_SIZE);
+      const data = await run(() => fetchAdminUsers(items.length, PAGE_SIZE), '불러오는 중...');
       setItems((prev) => [...prev, ...data.items]);
       setHasMore(data.hasMore);
     } catch (err) {
@@ -55,7 +57,7 @@ export function AdminUsersPanel() {
     setSavingId(userId);
     setError(null);
     try {
-      const result = await grantAdminCredits(userId, amount);
+      const result = await run(() => grantAdminCredits(userId, amount), '크레딧 추가 중...');
       setItems((prev) =>
         prev.map((item) => (item.userId === userId ? { ...item, credits: result.credits } : item)),
       );
@@ -68,7 +70,7 @@ export function AdminUsersPanel() {
   }
 
   if (loading) {
-    return <p className="text-sm text-slate-500">불러오는 중...</p>;
+    return <InlineBusy />;
   }
 
   if (forbidden) {

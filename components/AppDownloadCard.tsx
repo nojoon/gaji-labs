@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { InlineBusy, useLoading } from '@/components/LoadingProvider';
 import { downloadAppRelease, fetchAppRelease, formatFileSize, type AppRelease } from '@/lib/api';
 
 export function AppDownloadCard() {
@@ -8,6 +9,7 @@ export function AppDownloadCard() {
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { run } = useLoading();
 
   useEffect(() => {
     fetchAppRelease()
@@ -20,7 +22,7 @@ export function AppDownloadCard() {
     setDownloading(true);
     setError(null);
     try {
-      const { blob, fileName } = await downloadAppRelease();
+      const { blob, fileName } = await run(() => downloadAppRelease(), '다운로드 중...');
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -37,13 +39,13 @@ export function AppDownloadCard() {
   }
 
   if (loading) {
-    return <p className="text-sm text-slate-500">불러오는 중...</p>;
+    return <InlineBusy />;
   }
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6">
       <p className="text-sm leading-6 text-slate-500">
-        안드로이드 앱을 설치하거나 업데이트할 수 있습니다. 다운로드한 APK를 열어 설치하세요.
+        안드로이드 앱만 제공합니다.
       </p>
       {release ? (
         <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-500">

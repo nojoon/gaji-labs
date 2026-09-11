@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { InlineBusy, NavLink } from '@/components/LoadingProvider';
 import { fetchMeetingMinutesList } from '@/lib/api';
 import { formatMeetingDateTime } from '@/lib/minutes-text';
 import type { MeetingMinutesJob } from '@/lib/types';
@@ -44,7 +44,7 @@ export function MinutesList() {
   }, []);
 
   if (loading) {
-    return <p className="text-sm text-slate-500">불러오는 중...</p>;
+    return <InlineBusy />;
   }
 
   if (error && items.length === 0) {
@@ -59,7 +59,7 @@ export function MinutesList() {
     <ul className="space-y-3">
       {items.map((item) => (
         <li key={item.id}>
-          <Link
+          <NavLink
             href={`/minutes/${item.id}`}
             className="block rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm hover:border-brand/50 md:px-5"
           >
@@ -74,7 +74,7 @@ export function MinutesList() {
                 <StatusBadge status={item.status} />
               </div>
             </div>
-          </Link>
+          </NavLink>
         </li>
       ))}
     </ul>

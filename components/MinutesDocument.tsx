@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useLoading, useLoadingRouter } from '@/components/LoadingProvider';
 import { deleteMeetingMinutes, updateMeetingMinutes } from '@/lib/api';
 import {
   attendeesText,
@@ -26,7 +26,8 @@ export function MinutesDocument({
   onSaved?: (job: MeetingMinutesJob) => void;
   onEditingChange?: (editing: boolean) => void;
 }) {
-  const router = useRouter();
+  const router = useLoadingRouter();
+  const { run } = useLoading();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<MinutesDraft>(() => toEditableDraft(result));
   const [saving, setSaving] = useState(false);
@@ -96,7 +97,7 @@ export function MinutesDocument({
     if (!editing) return false;
     if (!isMinutesDraftDirty(draft, current)) {
       discard();
-      if (next === 'list') router.push('/minutes');
+      if (next === 'list') router.push('/minutes', '이동 중...');
       return false;
     }
     setLeaveNext(next);
@@ -109,7 +110,7 @@ export function MinutesDocument({
     setError(null);
     try {
       const next = draftToResult(draft);
-      const job = await updateMeetingMinutes(id, next);
+      const job = await run(() => updateMeetingMinutes(id, next), '저장 중...');
       setCurrent(job.result ?? next);
       setEditing(false);
       onSaved?.(job);
@@ -131,21 +132,21 @@ export function MinutesDocument({
     const ok = await save();
     if (!ok) return;
     setLeaveOpen(false);
-    if (leaveNext === 'list') router.push('/minutes');
+    if (leaveNext === 'list') router.push('/minutes', '이동 중...');
   }
 
   function confirmDiscardLeave() {
     discard();
     setLeaveOpen(false);
-    if (leaveNext === 'list') router.push('/minutes');
+    if (leaveNext === 'list') router.push('/minutes', '이동 중...');
   }
 
   async function confirmDelete() {
     setDeleting(true);
     setError(null);
     try {
-      await deleteMeetingMinutes(id);
-      router.push('/minutes');
+      await run(() => deleteMeetingMinutes(id), '삭제 중...');
+      router.push('/minutes', '이동 중...');
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : '삭제에 실패했습니다.');

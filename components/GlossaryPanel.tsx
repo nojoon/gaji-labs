@@ -8,6 +8,7 @@ import {
   updateGlossaryKeyword,
   type GlossaryKeyword,
 } from '@/lib/api';
+import { InlineBusy, useLoading } from '@/components/LoadingProvider';
 
 export function GlossaryPanel() {
   const [items, setItems] = useState<GlossaryKeyword[]>([]);
@@ -18,6 +19,7 @@ export function GlossaryPanel() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTerm, setEditingTerm] = useState('');
   const [savingId, setSavingId] = useState<string | null>(null);
+  const { run } = useLoading();
 
   useEffect(() => {
     fetchGlossaryKeywords()
@@ -35,7 +37,7 @@ export function GlossaryPanel() {
     setAdding(true);
     setError(null);
     try {
-      const item = await createGlossaryKeyword(term);
+      const item = await run(() => createGlossaryKeyword(term), '추가 중...');
       setItems((prev) => [...prev, item].sort((a, b) => a.term.localeCompare(b.term, 'ko')));
       setDraft('');
     } catch (err) {
@@ -60,7 +62,7 @@ export function GlossaryPanel() {
     setSavingId(id);
     setError(null);
     try {
-      const item = await updateGlossaryKeyword(id, term);
+      const item = await run(() => updateGlossaryKeyword(id, term), '저장 중...');
       setItems((prev) =>
         prev.map((row) => (row.id === id ? item : row)).sort((a, b) => a.term.localeCompare(b.term, 'ko')),
       );
@@ -78,7 +80,7 @@ export function GlossaryPanel() {
     setSavingId(item.id);
     setError(null);
     try {
-      await deleteGlossaryKeyword(item.id);
+      await run(() => deleteGlossaryKeyword(item.id), '삭제 중...');
       setItems((prev) => prev.filter((row) => row.id !== item.id));
       if (editingId === item.id) {
         setEditingId(null);
@@ -92,7 +94,7 @@ export function GlossaryPanel() {
   }
 
   if (loading) {
-    return <p className="text-sm text-slate-500">불러오는 중...</p>;
+    return <InlineBusy />;
   }
 
   return (

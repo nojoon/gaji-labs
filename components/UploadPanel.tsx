@@ -1,12 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
+import { useLoading, useLoadingRouter } from '@/components/LoadingProvider';
 import { creditsNeeded, getAudioDurationSeconds, uploadMeetingAudio } from '@/lib/api';
 import { MAX_DURATION_SECONDS } from '@/lib/types';
 
 export function UploadPanel() {
-  const router = useRouter();
+  const router = useLoadingRouter();
+  const { run } = useLoading();
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
@@ -26,7 +27,7 @@ export function UploadPanel() {
     }
 
     try {
-      const seconds = await getAudioDurationSeconds(next);
+      const seconds = await run(() => getAudioDurationSeconds(next), '파일 확인 중...');
       if (seconds > MAX_DURATION_SECONDS) {
         setError(`녹음 길이는 최대 2시간까지입니다. (현재 ${formatDuration(seconds)})`);
         return;
@@ -43,8 +44,8 @@ export function UploadPanel() {
     setUploading(true);
     setError(null);
     try {
-      const { jobId } = await uploadMeetingAudio(file);
-      router.push(`/minutes/${jobId}`);
+      const { jobId } = await run(() => uploadMeetingAudio(file), '업로드 중...');
+      router.push(`/minutes/${jobId}`, '이동 중...');
     } catch (err) {
       setError(err instanceof Error ? err.message : '업로드에 실패했습니다.');
       setUploading(false);

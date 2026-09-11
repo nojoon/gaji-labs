@@ -1,13 +1,14 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useLoading, useLoadingRouter } from '@/components/LoadingProvider';
 import { createClient } from '@/lib/supabase/client';
 
 type Mode = 'login' | 'signup';
 
 export default function LoginPage() {
-  const router = useRouter();
+  const router = useLoadingRouter();
+  const { show, hide } = useLoading();
   const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,29 +21,31 @@ export default function LoginPage() {
     setError(null);
     setInfo(null);
     setLoading(true);
+    show(mode === 'login' ? '로그인 중...' : '가입 중...');
     const supabase = createClient();
 
     try {
       if (mode === 'login') {
         const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
         if (authError) throw authError;
-        router.replace('/');
+        router.replace('/', '이동 중...');
         router.refresh();
-      } else {
-        const { data, error: authError } = await supabase.auth.signUp({ email, password });
-        if (authError) throw authError;
-        if (data.session) {
-          router.replace('/');
-          router.refresh();
-        } else {
-          setInfo('가입이 완료되었습니다. 이메일 확인이 켜져 있다면 메일의 링크를 눌러 주세요. 아니면 바로 로그인하세요.');
-          setMode('login');
-        }
+        return;
       }
+      const { data, error: authError } = await supabase.auth.signUp({ email, password });
+      if (authError) throw authError;
+      if (data.session) {
+        router.replace('/', '이동 중...');
+        router.refresh();
+        return;
+      }
+      setInfo('가입이 완료되었습니다. 이메일 확인이 켜져 있다면 메일의 링크를 눌러 주세요. 아니면 바로 로그인하세요.');
+      setMode('login');
     } catch (err) {
       setError(err instanceof Error ? err.message : '인증에 실패했습니다.');
     } finally {
       setLoading(false);
+      hide();
     }
   }
 
