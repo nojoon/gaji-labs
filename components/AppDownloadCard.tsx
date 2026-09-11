@@ -22,11 +22,11 @@ export function AppDownloadCard() {
     setDownloading(true);
     setError(null);
     try {
-      const { blob, fileName } = await run(() => downloadAppRelease(), '다운로드 중...');
+      const { blob } = await run(() => downloadAppRelease(), '다운로드 중...');
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = fileName || 'gaji-labs.apk';
+      a.download = 'gaji-labs.apk';
       document.body.appendChild(a);
       a.click();
       a.remove();

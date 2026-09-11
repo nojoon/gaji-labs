@@ -217,10 +217,7 @@ export async function downloadAppRelease() {
     throw new Error(await parseError(response));
   }
   const blob = await response.blob();
-  const disposition = response.headers.get('Content-Disposition') || '';
-  const matched = disposition.match(/filename\*?=(?:UTF-8''|")?([^\";]+)/i);
-  const fileName = matched ? decodeURIComponent(matched[1].replace(/"/g, '')) : 'gaji-labs.apk';
-  return { blob, fileName };
+  return { blob, fileName: 'gaji-labs.apk' };
 }
 
 export async function uploadAppRelease(file: File) {
