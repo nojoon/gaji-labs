@@ -1,4 +1,4 @@
-import type { DiscussionItem, MeetingMinutesResult } from './types';
+import { isCallMinutes, type DiscussionItem, type MeetingMinutesResult } from './types';
 
 const KST_DATE_RE = /^(\d{4})년\s+(\d{1,2})월\s+(\d{1,2})일(?:\s+(\d{1,2})시)?/;
 
@@ -152,7 +152,7 @@ export function meetingMinutesToPlainText(result: MeetingMinutesResult) {
     `1. 회의명: ${result.title || ''}`,
     `2. 일시: ${formatMeetingDateTime(result.date)}`,
     `3. 장소(또는 온라인): ${result.location || ''}`,
-    `4. 참석자: ${attendeesText(result)}`,
+    `4. ${isCallMinutes(result) ? '통화 상대' : '참석자'}: ${attendeesText(result)}`,
     '',
     '5. 안건 및 논의 내용',
     ...discussionLines,

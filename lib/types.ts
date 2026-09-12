@@ -24,8 +24,12 @@ export interface MeetingMinutesResult {
   sourceId?: string;
 }
 
-export function isCallMinutes(item: { title?: string | null; result?: MeetingMinutesResult | null }) {
-  return item.result?.source === 'call' || /^\s*\[통화\]/.test(item.title || '');
+export function isCallMinutes(item: {
+  title?: string | null;
+  source?: string;
+  result?: MeetingMinutesResult | null;
+}) {
+  return item.source === 'call' || item.result?.source === 'call' || /^\s*\[통화\]/.test(item.title || '');
 }
 
 export type MeetingStatus = 'processing' | 'done' | 'failed';

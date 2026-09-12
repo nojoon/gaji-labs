@@ -13,7 +13,7 @@ import {
   toEditableDraft,
   type MinutesDraft,
 } from '@/lib/minutes-text';
-import type { MeetingMinutesJob, MeetingMinutesResult } from '@/lib/types';
+import { isCallMinutes, type MeetingMinutesJob, type MeetingMinutesResult } from '@/lib/types';
 
 export function MinutesDocument({
   id,
@@ -269,7 +269,7 @@ export function MinutesDocument({
       {error ? <p className="px-4 pt-4 text-sm text-red-600 md:px-6">{error}</p> : null}
 
       {editing ? (
-        <Editor draft={draft} setDraft={setDraft} />
+        <Editor draft={draft} setDraft={setDraft} isCall={isCallMinutes(current)} />
       ) : (
         <Viewer result={current} discussion={discussion} />
       )}
@@ -286,11 +286,13 @@ function Viewer({
 }) {
   return (
     <>
-      <dl className="grid grid-cols-1 gap-x-4 gap-y-3 border-b border-slate-100 px-4 py-4 text-sm md:grid-cols-[7rem_1fr] md:px-6 md:py-5">
+      <dl className={`grid grid-cols-1 gap-x-4 gap-y-3 border-b border-slate-100 px-4 py-4 text-sm md:px-6 md:py-5 ${
+        isCallMinutes(result) ? 'md:grid-cols-[8.5rem_1fr]' : 'md:grid-cols-[7rem_1fr]'
+      }`}>
         <Field label="1. 회의명" value={result.title} />
         <Field label="2. 일시" value={formatMeetingDateTime(result.date)} />
         <Field label="3. 장소" value={result.location} />
-        <Field label="4. 참석자" value={attendeesText(result)} />
+        <Field label={isCallMinutes(result) ? '4. 통화 상대' : '4. 참석자'} value={attendeesText(result)} />
       </dl>
 
       <Section title="5. 안건 및 논의 내용">
@@ -355,19 +357,23 @@ function Viewer({
 function Editor({
   draft,
   setDraft,
+  isCall,
 }: {
   draft: MinutesDraft;
   setDraft: (next: MinutesDraft) => void;
+  isCall?: boolean;
 }) {
   const patch = (partial: Partial<MinutesDraft>) => setDraft({ ...draft, ...partial });
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-x-4 gap-y-3 border-b border-slate-100 px-4 py-4 text-sm md:grid-cols-[7rem_1fr] md:px-6 md:py-5">
+      <div className={`grid grid-cols-1 gap-x-4 gap-y-3 border-b border-slate-100 px-4 py-4 text-sm md:px-6 md:py-5 ${
+        isCall ? 'md:grid-cols-[8.5rem_1fr]' : 'md:grid-cols-[7rem_1fr]'
+      }`}>
         <EditField label="1. 회의명" value={draft.title} onChange={(title) => patch({ title })} />
         <EditField label="2. 일시" value={draft.date} onChange={(date) => patch({ date })} />
         <EditField label="3. 장소" value={draft.location} onChange={(location) => patch({ location })} />
-        <EditField label="4. 참석자" value={draft.attendees} onChange={(attendees) => patch({ attendees })} />
+        <EditField label={isCall ? '4. 통화 상대' : '4. 참석자'} value={draft.attendees} onChange={(attendees) => patch({ attendees })} />
       </div>
 
       <Section title="5. 안건 및 논의 내용">
