@@ -13,7 +13,7 @@ import {
   toEditableDraft,
   type MinutesDraft,
 } from '@/lib/minutes-text';
-import { isCallMinutes, type MeetingMinutesJob, type MeetingMinutesResult } from '@/lib/types';
+import { displayMinutesTitle, isCallMinutes, type MeetingMinutesJob, type MeetingMinutesResult } from '@/lib/types';
 
 export function MinutesDocument({
   id,
@@ -158,7 +158,7 @@ export function MinutesDocument({
   return (
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="flex flex-col gap-3 border-b border-slate-100 px-4 py-4 md:flex-row md:flex-wrap md:items-start md:justify-between md:px-6 md:py-5">
-        <h1 className="text-xl font-bold text-slate-900 md:text-2xl">{current.title || '회의록'}</h1>
+        <h1 className="line-clamp-2 text-xl font-bold text-slate-900 md:text-2xl">{displayMinutesTitle(current, '회의록')}</h1>
         <div className="flex flex-wrap gap-2">
           {editing ? (
             <>
@@ -289,7 +289,7 @@ function Viewer({
       <dl className={`grid grid-cols-1 gap-x-4 gap-y-3 border-b border-slate-100 px-4 py-4 text-sm md:px-6 md:py-5 ${
         isCallMinutes(result) ? 'md:grid-cols-[8.5rem_1fr]' : 'md:grid-cols-[7rem_1fr]'
       }`}>
-        <Field label="1. 회의명" value={result.title} />
+        <Field label="1. 회의명" value={displayMinutesTitle(result, '')} />
         <Field label="2. 일시" value={formatMeetingDateTime(result.date)} />
         <Field label="3. 장소" value={result.location} />
         <Field label={isCallMinutes(result) ? '4. 통화 상대' : '4. 참석자'} value={attendeesText(result)} />

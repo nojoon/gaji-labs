@@ -1,4 +1,4 @@
-import { isCallMinutes, type DiscussionItem, type MeetingMinutesResult } from './types';
+import { displayMinutesTitle, isCallMinutes, type DiscussionItem, type MeetingMinutesResult } from './types';
 
 const KST_DATE_RE = /^(\d{4})년\s+(\d{1,2})월\s+(\d{1,2})일(?:\s+(\d{1,2})시)?/;
 
@@ -51,7 +51,8 @@ export function formatMeetingDateTime(value?: string | null, fallbackIso?: strin
   return formatKstDateHour(date);
 }
 
-export function attendeesText(result: MeetingMinutesResult) {
+export function attendeesText(result?: MeetingMinutesResult | null) {
+  if (!result) return '';
   if (Array.isArray(result.attendees)) return result.attendees.join(', ');
   return result.attendees || '';
 }
@@ -71,7 +72,7 @@ export type MinutesDraft = {
 export function toEditableDraft(result: MeetingMinutesResult): MinutesDraft {
   const discussion = discussionItems(result);
   return {
-    title: result.title || '',
+    title: displayMinutesTitle(result, ''),
     date: formatMeetingDateTime(result.date),
     location: result.location || '',
     attendees: attendeesText(result),

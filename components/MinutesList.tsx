@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { InlineBusy, NavLink } from '@/components/LoadingProvider';
 import { fetchMeetingMinutesList } from '@/lib/api';
-import { formatMeetingDateTime } from '@/lib/minutes-text';
-import { isCallMinutes, type MeetingMinutesJob } from '@/lib/types';
+import { attendeesText, formatMeetingDateTime } from '@/lib/minutes-text';
+import { displayMinutesTitle, isCallMinutes, type MeetingMinutesJob } from '@/lib/types';
 
 const POLL_MS = 4000;
 
@@ -72,10 +72,15 @@ export function MinutesList() {
                 className="h-10 w-10 shrink-0 rounded-xl"
               />
               <div className="min-w-0 flex-1">
-                <div className="break-words font-semibold text-slate-900">{item.title || '처리 중인 회의록'}</div>
+                <div className="line-clamp-2 break-words font-semibold text-slate-900">
+                  {displayMinutesTitle(item)}
+                </div>
                 <div className="mt-1 text-sm text-slate-500">
                   {formatMeetingDateTime(item.result?.date, item.meeting_date) || '-'}
                 </div>
+                {isCallMinutes(item) && attendeesText(item.result) ? (
+                  <div className="mt-1 truncate text-sm text-slate-500">{attendeesText(item.result)}</div>
+                ) : null}
               </div>
               <div className="shrink-0">
                 <StatusBadge status={item.status} />

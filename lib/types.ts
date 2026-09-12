@@ -32,6 +32,15 @@ export function isCallMinutes(item: {
   return item.source === 'call' || item.result?.source === 'call' || /^\s*\[통화\]/.test(item.title || '');
 }
 
+export function displayMinutesTitle(
+  item: { title?: string | null; source?: string; result?: MeetingMinutesResult | null },
+  fallback = '처리 중인 회의록',
+) {
+  const raw = (item.title || item.result?.title || '').trim();
+  if (isCallMinutes(item)) return raw || fallback;
+  return raw.replace(/^\s*회의록\s*[:：]\s*/, '') || fallback;
+}
+
 export type MeetingStatus = 'processing' | 'done' | 'failed';
 
 export interface MeetingMinutesJob {
