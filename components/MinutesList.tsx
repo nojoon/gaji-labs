@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { InlineBusy, NavLink } from '@/components/LoadingProvider';
 import { fetchMeetingMinutesList } from '@/lib/api';
 import { formatMeetingDateTime } from '@/lib/minutes-text';
-import type { MeetingMinutesJob } from '@/lib/types';
+import { isCallMinutes, type MeetingMinutesJob } from '@/lib/types';
 
 const POLL_MS = 4000;
 
@@ -64,7 +64,14 @@ export function MinutesList() {
             className="block rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm hover:border-brand/50 md:px-5"
           >
             <div className="flex items-start justify-between gap-3 md:items-center">
-              <div className="min-w-0">
+              <img
+                src={isCallMinutes(item) ? '/call-minutes.png' : '/meeting-minutes.png'}
+                alt={isCallMinutes(item) ? '통화 회의록' : '미팅 회의록'}
+                width={40}
+                height={40}
+                className="h-10 w-10 shrink-0 rounded-xl"
+              />
+              <div className="min-w-0 flex-1">
                 <div className="break-words font-semibold text-slate-900">{item.title || '처리 중인 회의록'}</div>
                 <div className="mt-1 text-sm text-slate-500">
                   {formatMeetingDateTime(item.result?.date, item.meeting_date) || '-'}

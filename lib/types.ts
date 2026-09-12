@@ -20,6 +20,12 @@ export interface MeetingMinutesResult {
   discussion: DiscussionItem[] | string;
   decisions: string[];
   actionItems: ActionItem[];
+  source?: string;
+  sourceId?: string;
+}
+
+export function isCallMinutes(item: { title?: string | null; result?: MeetingMinutesResult | null }) {
+  return item.result?.source === 'call' || /^\s*\[통화\]/.test(item.title || '');
 }
 
 export type MeetingStatus = 'processing' | 'done' | 'failed';
