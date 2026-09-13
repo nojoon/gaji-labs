@@ -46,6 +46,15 @@ export async function fetchMeetingMinutes(id: string) {
   return response.json() as Promise<MeetingMinutesJob>;
 }
 
+export async function fetchMeetingTranscript(id: string) {
+  const headers = await authHeaders();
+  const response = await fetch(`${API_BASE}/api/meeting-minutes/${id}/transcript`, { headers });
+  if (!response.ok) {
+    throw new Error(await parseError(response));
+  }
+  return response.json() as Promise<{ text: string }>;
+}
+
 export async function updateMeetingMinutes(id: string, result: MeetingMinutesResult) {
   const headers = await authHeaders();
   const response = await fetch(`${API_BASE}/api/meeting-minutes/${id}`, {

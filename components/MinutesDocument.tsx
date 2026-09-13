@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useLoading, useLoadingRouter } from '@/components/LoadingProvider';
+import { NavLink, useLoading, useLoadingRouter } from '@/components/LoadingProvider';
 import { deleteMeetingMinutes, updateMeetingMinutes } from '@/lib/api';
 import {
   attendeesText,
@@ -180,6 +180,12 @@ export function MinutesDocument({
             </>
           ) : (
             <>
+              <NavLink
+                href={`/minutes/${id}/transcript`}
+                className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50"
+              >
+                전문 보기
+              </NavLink>
               <button
                 type="button"
                 onClick={copyText}

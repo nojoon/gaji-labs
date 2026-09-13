@@ -50,6 +50,7 @@ export interface MeetingMinutesJob {
   meeting_date: string | null;
   duration_seconds: number | null;
   result: MeetingMinutesResult | null;
+  hasTranscript?: boolean;
   error_message: string | null;
   created_at: string;
   updated_at: string;
