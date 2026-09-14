@@ -14,6 +14,7 @@ import {
   type MinutesDraft,
 } from '@/lib/minutes-text';
 import { displayMinutesTitle, isCallMinutes, type MeetingMinutesJob, type MeetingMinutesResult } from '@/lib/types';
+import { MinutesImages } from './MinutesImages';
 
 export function MinutesDocument({
   id,
@@ -279,6 +280,7 @@ export function MinutesDocument({
       ) : (
         <Viewer result={current} discussion={discussion} />
       )}
+      <MinutesImages id={id} />
     </article>
   );
 }

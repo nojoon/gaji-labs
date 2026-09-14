@@ -79,6 +79,61 @@ export async function deleteMeetingMinutes(id: string) {
   }
 }
 
+export interface MinutesImage {
+  id: string;
+  fileName: string | null;
+  mimeType: string | null;
+  createdAt: string;
+}
+
+export const MAX_MINUTES_IMAGES = 10;
+
+export async function fetchMinutesImages(id: string) {
+  const headers = await authHeaders();
+  const response = await fetch(`${API_BASE}/api/meeting-minutes/${id}/images`, { headers });
+  if (!response.ok) {
+    throw new Error(await parseError(response));
+  }
+  const data = await response.json();
+  return (data.items || []) as MinutesImage[];
+}
+
+export async function uploadMinutesImages(id: string, files: File[]) {
+  const headers = await authHeaders();
+  const form = new FormData();
+  for (const file of files) form.append('images', file);
+  const response = await fetch(`${API_BASE}/api/meeting-minutes/${id}/images`, {
+    method: 'POST',
+    headers,
+    body: form,
+  });
+  if (!response.ok) {
+    throw new Error(await parseError(response));
+  }
+  const data = await response.json();
+  return (data.items || []) as MinutesImage[];
+}
+
+export async function deleteMinutesImage(id: string, imageId: string) {
+  const headers = await authHeaders();
+  const response = await fetch(`${API_BASE}/api/meeting-minutes/${id}/images/${imageId}`, {
+    method: 'DELETE',
+    headers,
+  });
+  if (!response.ok) {
+    throw new Error(await parseError(response));
+  }
+}
+
+export async function fetchMinutesImageBlob(id: string, imageId: string) {
+  const headers = await authHeaders();
+  const response = await fetch(`${API_BASE}/api/meeting-minutes/${id}/images/${imageId}`, { headers });
+  if (!response.ok) {
+    throw new Error(await parseError(response));
+  }
+  return response.blob();
+}
+
 export async function fetchMeetingMinutesList() {
   const headers = await authHeaders();
   const response = await fetch(`${API_BASE}/api/meeting-minutes`, { headers });

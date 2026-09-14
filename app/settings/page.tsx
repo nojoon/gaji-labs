@@ -14,8 +14,7 @@ export default async function SettingsPage() {
     <div className="min-h-screen">
       <AppHeader email={user?.email} />
       <PageMain>
-        <PageTitle>설정</PageTitle>
-        <PageLead>앱을 받거나, 회의록에 맞출 내부 키워드를 관리합니다.</PageLead>
+        <PageTitle>설정</PageTitle>        
 
         <h2 className="mt-8 text-base font-bold text-slate-800 md:text-lg">앱 다운로드</h2>
         <div className="mt-4">
