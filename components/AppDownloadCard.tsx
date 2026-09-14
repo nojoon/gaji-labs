@@ -26,7 +26,7 @@ export function AppDownloadCard() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'gaji-labs.apk';
+      a.download = 'gaji-hub.apk';
       document.body.appendChild(a);
       a.click();
       a.remove();

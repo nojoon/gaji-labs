@@ -3,7 +3,7 @@ import { Providers } from './providers';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '가지 랩스 회의록',
+  title: '가지 허브 회의록',
   description: '녹음 파일을 업로드하면 회의록을 만들어 드립니다.',
   icons: {
     icon: '/gaji-labs-icon.png',

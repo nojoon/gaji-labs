@@ -62,7 +62,7 @@ export function AppHeader({ email }: { email?: string }) {
       <div className="mx-auto hidden h-16 max-w-4xl items-center justify-between px-4 md:flex">
         <NavLink href="/" className="flex items-center gap-2 text-lg font-bold text-brand">
           <img src="/gaji-labs-icon.png" alt="" width={28} height={28} className="h-7 w-7 rounded-md" />
-          Gaji Labs
+          Gaji Hub
         </NavLink>
         <nav className="flex items-center gap-1">
           {nav.map((item) => (
@@ -95,7 +95,7 @@ export function AppHeader({ email }: { email?: string }) {
       <div className="relative mx-auto flex h-14 max-w-4xl items-center justify-between px-4 md:hidden">
         <NavLink href="/" className="flex items-center gap-2 text-base font-bold text-brand">
           <img src="/gaji-labs-icon.png" alt="" width={24} height={24} className="h-6 w-6 rounded-md" />
-          Gaji Labs
+          Gaji Hub
         </NavLink>
         <div className="flex items-center gap-2">
           <CreditBadge credits={me?.credits} compact />

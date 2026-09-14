@@ -54,7 +54,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-8">
         <h1 className="flex items-center gap-3 text-xl font-bold text-slate-900 md:text-2xl">
           <img src="/gaji-labs-icon.png" alt="" width={40} height={40} className="h-10 w-10 rounded-xl" />
-          Gaji Labs
+          Gaji Hub
         </h1>
 
         <div className="mt-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1 text-sm font-medium">

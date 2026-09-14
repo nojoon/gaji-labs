@@ -226,7 +226,7 @@ export async function downloadAppRelease() {
     throw new Error(await parseError(response));
   }
   const blob = await response.blob();
-  return { blob, fileName: 'gaji-labs.apk' };
+  return { blob, fileName: 'gaji-hub.apk' };
 }
 
 export async function uploadAppRelease(file: File) {
